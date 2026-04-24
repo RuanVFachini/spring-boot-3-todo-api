@@ -7,4 +7,5 @@ class TodoResponse(
     var description: String,
     var completed: Boolean,
     var createdAt: Instant,
+    var completedAt: Instant?,
 )

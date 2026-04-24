@@ -18,4 +18,6 @@ class Todo(
     var completed: Boolean,
     @Column(nullable = false)
     var createdAt: Instant,
+    @Column(nullable = true)
+    var completedAt: Instant? = null,
 )
