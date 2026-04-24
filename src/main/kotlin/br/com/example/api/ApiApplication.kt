@@ -1,3 +1,5 @@
+@file:Suppress("SpringCompilerPlugin")
+
 package br.com.example.api
 
 import org.springframework.boot.autoconfigure.SpringBootApplication

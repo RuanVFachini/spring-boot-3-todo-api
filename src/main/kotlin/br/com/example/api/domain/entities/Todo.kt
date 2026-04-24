@@ -5,19 +5,28 @@ import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
 import java.time.Instant
 
 @Entity
-class Todo(
+class Todo() {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    var id: Long? = null,
+    var id: Long? = null
     @Column(nullable = false)
-    var description: String,
+    lateinit var description: String
     @Column(nullable = false)
-    var completed: Boolean,
+    var completed: Boolean = false
     @Column(nullable = false)
-    var createdAt: Instant,
+    lateinit var createdAt: Instant
     @Column(nullable = true)
-    var completedAt: Instant? = null,
-)
+    var completedAt: Instant? = null
+
+    constructor(id: Long, description: String, completed: Boolean, createdAt: Instant) : this() {
+        this.id = id
+        this.description = description
+        this.completed = completed
+        this.createdAt = createdAt
+    }
+}

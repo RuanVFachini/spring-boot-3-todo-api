@@ -1,76 +1,47 @@
 package br.com.example.api.application.configs
 
-import br.com.example.api.application.filters.ApiKeyAuthFilter
+import br.com.example.api.application.filters.JwtAuthFilter
+import jakarta.servlet.DispatcherType
+import org.springframework.cglib.proxy.Dispatcher
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
-import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.config.Customizer
+import org.springframework.http.HttpStatus
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer.ExpressionInterceptUrlRegistry
 import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.core.Authentication
-import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher
-import java.util.Collections
 
-
-//@Configuration
-//@EnableWebSecurity
-//class SecurityConfig(
-//    private val apiKeyFilter: ApiKeyAuthFilter
-//) {
-//
-//    @Bean
-//    fun filterChain(http: HttpSecurity): SecurityFilterChain {
-//        return http
-//            .csrf { it.disable() }
-//            .sessionManagement { it.disable() }
-//            .authorizeHttpRequests {
-//                it.anyRequest().authenticated()
-//            }
-//            .addFilterBefore(apiKeyFilter, AnonymousAuthenticationFilter::class.java)
-//            .build()
-//    }
-//}
 
 @Configuration
 @EnableWebSecurity
-class SecurityConfig {
-    @Bean
-    @Throws(Exception::class)
-    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain? {
-        val filter = ApiKeyAuthFilter(AntPathRequestMatcher("/api/**"))
-        filter.setAuthenticationManager(AuthenticationManager { authentication: Authentication? ->
-            val apiKey = authentication!!.principal as String?
-            val apiSecret = authentication.credentials as String?
+class SecurityConfig(
+    private val jwtAuthFilter: JwtAuthFilter,
+) {
 
-            if ("my-secret" == apiKey && "my-secret" == apiSecret) {
-                    val token = ApiKeyAuthenticationToken(
-                    apiKey,
-                    apiSecret,
-                    Collections.singletonList(SimpleGrantedAuthority("USER"))
-                )
-                return@AuthenticationManager token
-            } else {
-                authentication.isAuthenticated = false
-            }
-            authentication
-        })
+    @Bean
+    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain? {
 
         http
             .csrf { it.disable() }
+            .cors { corsConfigurer -> corsConfigurer.configure(http) }
             .sessionManagement { managementSession ->
                 managementSession.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
             .authorizeHttpRequests {
+                it.dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
+                it.requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                it.requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                 it.anyRequest().authenticated()
             }
-            .addFilterBefore(filter, UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)
 
         return http.build()
     }
+
+    @Bean
+    fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 }
