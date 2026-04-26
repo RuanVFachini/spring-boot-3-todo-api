@@ -8,4 +8,6 @@ interface AuthService {
     fun login(userName: String, password: String): String
 
     fun register(userName: String, password: String): User
+
+    fun validateToken(token: String): UserDetails
 }

@@ -28,7 +28,7 @@ class TodoController(
         null
     )
 
-    private fun TodoRequest.toEntity(): Todo = Todo(null, description, false, Instant.now())
+    private fun TodoRequest.toEntity(): Todo = Todo(0, description, false, Instant.now())
 
     @Async
     @GetMapping

@@ -6,7 +6,9 @@ spring:
     user:
       name: user
       password: user
-    api-key: my-secret
+    auth:
+      secret: abc123
+      issuer: my-auth
 
   datasource:
     url: jdbc:h2:mem:testdb

@@ -3,6 +3,7 @@ package br.com.example.api.application.exceptions
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ProblemDetail
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 
@@ -15,6 +16,18 @@ class ControllerAdvise {
             detail = e.message
             properties = mapOf(
                 "errors" to listOf<String>()
+            )
+        }
+    }
+
+    @ExceptionHandler(UsernameNotFoundException::class)
+    fun handleEntityNotFoundException(e: UsernameNotFoundException): ProblemDetail {
+        return ProblemDetail.forStatus(HttpStatus.UNAUTHORIZED).apply {
+            detail = e.message
+            properties = mapOf(
+                "errors" to mapOf<String, String>(
+                    "username" to "User not found"
+                )
             )
         }
     }

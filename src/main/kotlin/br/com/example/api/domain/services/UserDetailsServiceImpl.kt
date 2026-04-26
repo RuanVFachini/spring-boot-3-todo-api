@@ -10,6 +10,6 @@ class UserDetailsServiceImpl(
     private val userRepository: UserRepository
 ) : UserDetailsService {
     override fun loadUserByUsername(username: String): UserDetails {
-        return userRepository.findByEmail(username).getOrElse { throw UsernameNotFoundException(username) }
+        return userRepository.findByUsername(username).getOrElse { throw UsernameNotFoundException(username) }
     }
 }
