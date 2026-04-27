@@ -2,6 +2,8 @@ package br.com.example.api.domain.services
 
 import br.com.example.api.domain.entities.User
 import br.com.example.api.domain.repositories.UserRepository
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -12,7 +14,8 @@ import kotlin.jvm.optionals.getOrElse
 class AuthServiceImpl(
     val userRepository: UserRepository,
     val passwordEncoder: PasswordEncoder,
-    val tokenService: TokenService
+    val tokenService: TokenService,
+    val authenticationManager: AuthenticationManager
 ) : AuthService {
     override fun login(
         userName: String,
@@ -21,6 +24,13 @@ class AuthServiceImpl(
         val user = userRepository.findByUsername(userName).getOrElse {
             throw UsernameNotFoundException(userName)
         }
+
+        val auth = UsernamePasswordAuthenticationToken(
+            userName,
+            password
+        )
+
+        authenticationManager.authenticate(auth)
         return tokenService.generateToken(user)
     }
 

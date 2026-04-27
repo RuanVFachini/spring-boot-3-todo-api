@@ -30,28 +30,15 @@ class TodoController(
 
     private fun TodoRequest.toEntity(): Todo = Todo(0, description, false, Instant.now())
 
-    @Async
     @GetMapping
-    fun all(): CompletableFuture<List<TodoResponse>> {
-        return CompletableFuture.supplyAsync {
-            service.all().map { it.mapToResponse()
-        }}
-    }
+    fun all() = service.all().map { it.mapToResponse() }
 
-    @Async
     @PostMapping
-    fun create(@RequestBody request: TodoRequest): CompletableFuture<TodoResponse> {
-        return CompletableFuture.supplyAsync {
-            val entity = request.toEntity()
-            service.save(entity).mapToResponse()
-        }
+    suspend fun create(@RequestBody request: TodoRequest): TodoResponse {
+        val entity = request.toEntity()
+        return service.save(entity).mapToResponse()
     }
 
-    @Async
     @PostMapping("/{id}/complete")
-    fun complete(@PathVariable id: Int): CompletableFuture<TodoResponse> {
-        return CompletableFuture.supplyAsync {
-            service.complete(id).mapToResponse()
-        }
-    }
+    suspend fun complete(@PathVariable id: Int) = service.complete(id).mapToResponse()
 }

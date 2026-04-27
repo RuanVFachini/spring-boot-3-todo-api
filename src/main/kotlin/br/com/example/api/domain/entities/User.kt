@@ -16,7 +16,7 @@ class User(): UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Long? = null
-    @Column(nullable = false)
+    @Column(nullable = false, unique=true)
     private lateinit var username: String
     @Column(nullable = false)
     private lateinit var hash: String
@@ -28,7 +28,7 @@ class User(): UserDetails {
 
     override fun getAuthorities(): Collection<GrantedAuthority?>? = listOf<GrantedAuthority>(SimpleGrantedAuthority("ROLE_ADMIN"))
 
-    override fun getPassword(): String? = username
+    override fun getPassword(): String? = hash
 
-    override fun getUsername(): String? = password
+    override fun getUsername(): String? = username
 }

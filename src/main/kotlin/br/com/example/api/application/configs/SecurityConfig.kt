@@ -3,6 +3,7 @@ package br.com.example.api.application.configs
 import br.com.example.api.application.filters.JwtAuthFilter
 import br.com.example.api.domain.services.AuthService
 import jakarta.servlet.DispatcherType
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Lazy
@@ -19,8 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
-    private val authService: AuthService,
-    @param:Lazy private val authenticationManager: AuthenticationManager
+    @param:Lazy private val authService: AuthService
 ) {
 
     @Bean
@@ -45,6 +45,14 @@ class SecurityConfig(
             }
 
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)
+            .exceptionHandling {
+                it.authenticationEntryPoint { _, response, _ ->
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED)
+                }
+                it.accessDeniedHandler { _, response, _ ->
+                    response.sendError(HttpServletResponse.SC_FORBIDDEN)
+                }
+            }
         return http.build()
     }
 
