@@ -1,9 +1,11 @@
 package br.com.example.api.application.configs
 
 import br.com.example.api.application.filters.JwtAuthFilter
+import br.com.example.api.domain.services.AuthService
 import jakarta.servlet.DispatcherType
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Lazy
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
@@ -17,11 +19,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
-    private val jwtAuthFilter: JwtAuthFilter,
+    private val authService: AuthService,
+    @param:Lazy private val authenticationManager: AuthenticationManager
 ) {
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain? {
+
+        val jwtAuthFilter = JwtAuthFilter(authService)
 
         http
             .csrf { it.disable() }
@@ -31,8 +36,11 @@ class SecurityConfig(
             }
             .authorizeHttpRequests {
                 it.dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
-                it.requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                it.requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+                it.requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                it.requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
+                it.requestMatchers(HttpMethod.GET, "/swagger-ui.html").permitAll()
+                it.requestMatchers(HttpMethod.GET, "/swagger-ui/*").permitAll()
+                it.requestMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll()
                 it.anyRequest().authenticated()
             }
 

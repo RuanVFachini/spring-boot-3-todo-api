@@ -12,13 +12,16 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
+@RestController
 @RequestMapping("/api/auth")
 class AuthController(
     private val service: AuthService
 ) {
 
-    @PostMapping("/register")
+    @PostMapping()
+    @RequestMapping("/register")
     fun register(@Valid @RequestBody request: RegisterUserRequest): ResponseEntity<RegisterUserResponse> {
         return ResponseEntity.status(HttpStatus.CREATED).body(
             service.register(request.email, request.password).toResponse()

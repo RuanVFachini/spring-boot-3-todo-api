@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 @Entity
@@ -25,7 +26,7 @@ class User(): UserDetails {
         this.hash = hash
     }
 
-    override fun getAuthorities(): Collection<GrantedAuthority?>? = listOf<GrantedAuthority>()
+    override fun getAuthorities(): Collection<GrantedAuthority?>? = listOf<GrantedAuthority>(SimpleGrantedAuthority("ROLE_ADMIN"))
 
     override fun getPassword(): String? = username
 
