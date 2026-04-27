@@ -34,11 +34,11 @@ class TodoController(
     fun all() = service.all().map { it.mapToResponse() }
 
     @PostMapping
-    suspend fun create(@RequestBody request: TodoRequest): TodoResponse {
+    fun create(@RequestBody request: TodoRequest): TodoResponse {
         val entity = request.toEntity()
         return service.save(entity).mapToResponse()
     }
 
     @PostMapping("/{id}/complete")
-    suspend fun complete(@PathVariable id: Int) = service.complete(id).mapToResponse()
+    fun complete(@PathVariable id: Int) = service.complete(id).mapToResponse()
 }
