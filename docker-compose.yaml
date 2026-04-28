@@ -1,0 +1,24 @@
+services:
+  webmvc-postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "user@123"
+      POSTGRES_DB: "api-performance"
+    ports:
+      - "5432:5432"
+    networks:
+      - minha-rede
+
+  webmvc-app:
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - minha-rede
+    depends_on:
+      - webmvc-postgres
+
+networks:
+  minha-rede:
