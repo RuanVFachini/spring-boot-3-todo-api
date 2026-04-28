@@ -1,6 +1,14 @@
 services:
   webmvc-postgres:
     image: postgres
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'          # Limite de até 1.5 núcleos de CPU [2, 10]
+          memory: 256M        # Limite máximo de 1024 MB de RAM [2, 10]
+        reservations:
+          cpus: '0.5'          # Reserva garantida de 0.5 CPU
+          memory: 256M         # Reserva garantida de 512 MB RAM [1]
     environment:
       POSTGRES_USER: "user"
       POSTGRES_PASSWORD: "user@123"
@@ -13,6 +21,14 @@ services:
   webmvc-app:
     build:
       dockerfile: Dockerfile
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'          # Limite de até 1.5 núcleos de CPU [2, 10]
+          memory: 2048M        # Limite máximo de 1024 MB de RAM [2, 10]
+        reservations:
+          cpus: '0.5'          # Reserva garantida de 0.5 CPU
+          memory: 512M         # Reserva garantida de 512 MB RAM [1]
     ports:
       - "8080:8080"
     networks:

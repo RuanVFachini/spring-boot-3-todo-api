@@ -23,7 +23,7 @@ class Todo() {
     @Column(nullable = true)
     var completedAt: Instant? = null
 
-    constructor(id: Long, description: String, completed: Boolean, createdAt: Instant) : this() {
+    constructor(id: Long?, description: String, completed: Boolean, createdAt: Instant) : this() {
         this.id = id
         this.description = description
         this.completed = completed

@@ -11,7 +11,7 @@ spring:
       issuer: my-auth
 
   datasource:
-    url: jdbc:postgresql://webflux-postgres:5432/api-performance
+    url: jdbc:postgresql://webmvc-postgres:5432/api-performance
     driverClassName: org.postgresql.Driver
     username: user
     password: user@123
