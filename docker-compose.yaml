@@ -24,7 +24,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1.5'          # Limite de até 1.5 núcleos de CPU [2, 10]
+          cpus: '3'          # Limite de até 1.5 núcleos de CPU [2, 10]
           memory: 2048M        # Limite máximo de 1024 MB de RAM [2, 10]
         reservations:
           cpus: '0.5'          # Reserva garantida de 0.5 CPU
