@@ -12,6 +12,8 @@ rodar_testes_de_carga() {
   echo -e "${GREEN}Rodando testes k6...${NC}"
   docker run --rm -i \
   -v $(pwd):/app \
+  --memory=4g \
+  --cpus=3 \
   --add-host=host.docker.internal:host-gateway \
   grafana/k6 run /app/k6-tests/carga.js
 }
